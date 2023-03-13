@@ -5,6 +5,7 @@ import com.opencsv.CSVParserBuilder;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
 import com.opencsv.exceptions.CsvValidationException;
+import is.model.ComputerInfo;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
