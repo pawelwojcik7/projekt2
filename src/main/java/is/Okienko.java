@@ -28,8 +28,6 @@ public class Okienko extends JFrame {
 
     private final static String gbRegexRegex = "^[0-9]+GB$";
 
-    private List<List<String>> results = new ArrayList<>();
-
     private final List<String> headers = new ArrayList<>(Arrays.asList(
             "Producent",
             "Wielkość matrycy",
@@ -101,7 +99,7 @@ public class Okienko extends JFrame {
 
     private void saveData() throws IOException {
         if(validateData()){
-            results = new ArrayList<>();
+            List<List<String>> results = new ArrayList<>();
             int rowCount = table.getRowCount();
             int colCount = table.getColumnCount();
             for (int row = 0; row < rowCount; row++) {
@@ -181,7 +179,7 @@ public class Okienko extends JFrame {
         String[] line;
         list = new ArrayList<>();
         while ((line = reader.readNext()) != null) {
-            String diagonal = null;
+            String diagonal;
             if(line[1]==null || line[1].equals("")) diagonal = line[1];
             else diagonal = line[1]+"\"";
             list.add(new ComputerInfo(
