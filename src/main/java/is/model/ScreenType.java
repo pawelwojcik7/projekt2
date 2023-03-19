@@ -4,9 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @AllArgsConstructor
-public enum OpticalDriveType {
+public enum ScreenType {
 
-    BLU_RAY("Blu-Ray"), BRAK("brak"), DVD("DVD");
+    MATTE("matowa"), GLOSSY("blyszczaca");
 
     @Getter
     public final String code;

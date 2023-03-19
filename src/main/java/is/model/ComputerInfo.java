@@ -1,6 +1,5 @@
 package is.model;
 
-import com.opencsv.bean.CsvBindByPosition;
 import lombok.*;
 
 @AllArgsConstructor
@@ -9,6 +8,8 @@ import lombok.*;
 @Setter
 @ToString
 public class ComputerInfo {
+
+    private String index;
     private String producer;
     private String diagonal;
     private String resolution;
@@ -25,8 +26,9 @@ public class ComputerInfo {
     private String operatingSystem;
     private String opticalDrive;
 
-    public String[] toStringArray(){
+    public String[] toStringArray() {
         return new String[]{
+                index,
                 producer,
                 diagonal,
                 resolution,

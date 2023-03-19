@@ -9,22 +9,22 @@ import java.util.List;
 
 @AllArgsConstructor
 public enum Headers {
-
-    PRODUCER("Producent", 0),
-    DIAGONAL("Wielkość matrycy", 1),
-    RESOLUTION("Rozdzielczość", 2),
-    SCREEN_TYPE("Typ matrycy", 3),
-    IS_TOUCHABLE("Czy dotykowa", 4),
-    PROCESSOR("Procesor", 5),
-    CORE_NUMBER("Liczba rdzeni fizycznych", 6),
-    FREQUENCY("Taktowanie", 7),
-    RAM("RAM", 8),
-    DISK_SIZE("Pojemność dysku", 9),
-    DISK_TYPE("Typ dysku", 10),
-    GRAPHIC_CARD("Karta graficzna", 11),
-    GRAPHIC_CARD_MEMORY("Pamięć karty graficznej", 12),
-    OPERATING_SYSTEM("System operacyjny", 13),
-    OPTICAL_DRIVE("Napęd optyczny", 14);
+    INDEX("Index", 0),
+    PRODUCER("Producent", 1),
+    DIAGONAL("Wielkość matrycy", 2),
+    RESOLUTION("Rozdzielczość", 3),
+    SCREEN_TYPE("Typ matrycy", 4),
+    IS_TOUCHABLE("Czy dotykowa", 5),
+    PROCESSOR("Procesor", 6),
+    CORE_NUMBER("Liczba rdzeni fizycznych", 7),
+    FREQUENCY("Taktowanie", 8),
+    RAM("RAM", 9),
+    DISK_SIZE("Pojemność dysku", 10),
+    DISK_TYPE("Typ dysku", 11),
+    GRAPHIC_CARD("Karta graficzna", 12),
+    GRAPHIC_CARD_MEMORY("Pamięć karty graficznej", 13),
+    OPERATING_SYSTEM("System operacyjny", 14),
+    OPTICAL_DRIVE("Napęd optyczny", 15);
 
 
     @Getter
@@ -33,10 +33,10 @@ public enum Headers {
     @Getter
     private Integer index;
 
-    public List<Headers> sortedValues(){
-        List<Headers> list = List.of(Headers.values());
-        Arrays.sort(list, Comdisparator.comparingInt(Headers::getIndex));
-        return list;
+    public static List<Headers> sortedValues() {
+        Headers[] table = Headers.values();
+        Arrays.sort(table, Comparator.comparingInt(Headers::getIndex));
+        return List.of(table);
     }
 
 }

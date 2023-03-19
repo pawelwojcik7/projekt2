@@ -16,19 +16,19 @@ public class Either<L, R> {
         this.right = right;
     }
 
-    public Either<L,R> right(R value){
+    public Either<L, R> right(R value) {
         return new Either<>(null, value);
     }
 
-    public Either<L,R> left(L left){
+    public Either<L, R> left(L left) {
         return new Either<>(left, null);
     }
 
-    public Boolean isRight(){
+    public Boolean isRight() {
         return this.left == null;
     }
 
-    public Boolean isLeft(){
+    public Boolean isLeft() {
         return this.right == null;
     }
 

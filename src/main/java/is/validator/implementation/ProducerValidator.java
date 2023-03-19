@@ -3,16 +3,16 @@ package is.validator.implementation;
 import is.model.Either;
 import is.validator.ColumnValidator;
 
-public class ResolutionValidator implements ColumnValidator {
-    private final static String resolutionRegex = "\\d+x\\d+";
+public class ProducerValidator implements ColumnValidator {
 
-    private final static String message = " doesn't match regex: NxN";
+    private final static String onlyLettersRegex = "^[a-zA-Z]+$";
+
+    private final static String message = " doesn't match format: Only letters";
 
     @Override
     public Either<String, Boolean> validate(String value) {
-        if (value.matches(resolutionRegex) || value.equals("")) {
+        if (value.matches(onlyLettersRegex) || value.equals("")) {
             return new Either<String, Boolean>().right(true);
         } else return new Either<String, Boolean>().left("[ " + value + " ]" + message);
     }
-
 }

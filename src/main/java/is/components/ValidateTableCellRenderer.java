@@ -1,13 +1,14 @@
 package is.components;
 
 import is.validator.ColumnValidator;
+import lombok.Getter;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
 
 public class ValidateTableCellRenderer extends DefaultTableCellRenderer {
-
+    @Getter
     private final ColumnValidator validator;
 
     public ValidateTableCellRenderer(ColumnValidator validator) {
@@ -21,7 +22,7 @@ public class ValidateTableCellRenderer extends DefaultTableCellRenderer {
         if (value == null || value.equals("")) {
             c.setBackground(Color.YELLOW);
         } else {
-            if(validator.validate((String) value).isLeft()) c.setBackground(Color.RED);
+            if (validator.validate((String) value).isLeft()) c.setBackground(Color.RED);
             else c.setBackground(table.getBackground());
         }
 
