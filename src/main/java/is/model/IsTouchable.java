@@ -6,7 +6,10 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum IsTouchable {
 
-    YES("tak"), NO("nie");
+    TAK("tak"),
+    YES("yes"),
+    NO("no"),
+    NIE("nie");
 
     @Getter
     public final String code;

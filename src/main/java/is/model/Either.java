@@ -16,8 +16,8 @@ public class Either<L, R> {
         this.right = right;
     }
 
-    public Either<L, R> right(R value) {
-        return new Either<>(null, value);
+    public Either<L, R> right(R right) {
+        return new Either<>(null, right);
     }
 
     public Either<L, R> left(L left) {

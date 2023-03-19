@@ -1,5 +1,6 @@
 package is.components;
 
+
 import com.opencsv.CSVParser;
 import com.opencsv.CSVParserBuilder;
 import com.opencsv.CSVReader;
@@ -10,14 +11,24 @@ import is.model.Either;
 import is.model.Headers;
 import is.validator.implementation.*;
 
+import is.xml.Laptop;
+import is.xml.Laptops;
+import org.dom4j.Document;
+import org.dom4j.Element;
+import org.dom4j.io.SAXReader;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
 import java.awt.*;
 import java.io.*;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -43,12 +54,14 @@ public class Okienko extends JFrame {
         };
         table = new JTable(model);
 
-        JButton readData = new JButton("Wczytaj dane");
-        JButton saveData = new JButton("Zapisz dane");
-        JPanel mainPanel = new JPanel(new GridLayout(1, 3));
+        JButton readDataTxt = new JButton("Wczytaj dane TXT");
+        JButton saveDataTxt = new JButton("Zapisz dane do TXT");
+        JButton readDataXml = new JButton("Wczytaj dane XML");
+        JButton savaDataXml = new JButton("Zapisz dane do XML");
+        JPanel mainPanel = new JPanel(new GridLayout(1, 5));
         JScrollPane content = new JScrollPane(table);
 
-        readData.addActionListener(e -> {
+        readDataTxt.addActionListener(e -> {
             try {
                 readData();
                 isRead = true;
@@ -58,7 +71,7 @@ public class Okienko extends JFrame {
             }
         });
 
-        saveData.addActionListener(e -> {
+        saveDataTxt.addActionListener(e -> {
             try {
                 saveData();
             } catch (IOException ex) {
@@ -67,8 +80,12 @@ public class Okienko extends JFrame {
             }
         });
 
-        mainPanel.add(readData);
-        mainPanel.add(saveData);
+        readDataXml.addActionListener(e -> readXml());
+
+        mainPanel.add(readDataTxt);
+        mainPanel.add(saveDataTxt);
+        mainPanel.add(readDataXml);
+        mainPanel.add(savaDataXml);
         mainPanel.add(errorField);
 
         setColumnHeaders();
@@ -101,7 +118,7 @@ public class Okienko extends JFrame {
                 results.add(rowList);
             }
             String zipFileName = OffsetDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH-mm-ss")) + ".zip";
-            String fileName = "katalog.csv";
+            String fileName = "katalog.txt";
 
             PrintWriter writer = new PrintWriter(fileName);
             results.forEach(e -> {
@@ -171,7 +188,7 @@ public class Okienko extends JFrame {
 
     private void readData() throws IOException, CsvValidationException {
         CSVParser csvParser = new CSVParserBuilder().withSeparator(';').withIgnoreQuotations(true).build();
-        String fileName = "katalog.csv";
+        String fileName = "katalog.txt";
         CSVReader reader = new CSVReaderBuilder(new FileReader(fileName)).withCSVParser(csvParser).build();
         String[] line;
         list = new ArrayList<>();
@@ -235,5 +252,23 @@ public class Okienko extends JFrame {
         list.forEach(info -> model.addRow(info.toStringArray()));
         repaint();
     }
+
+    private void readXml(){
+        try {
+            JAXBContext jaxbContext = JAXBContext.newInstance(Laptops.class);
+            Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+
+            File xmlFile = new File("katalog.xml");
+            Laptops laptops = (Laptops) jaxbUnmarshaller.unmarshal(xmlFile);
+            list = new ArrayList<>();
+            list = laptops.getLaptops().stream().map(Laptop::toComputerInfo).collect(Collectors.toList());
+            setTable();
+        } catch (JAXBException e) {
+            errorField.setText(e.getMessage());
+            clearErrorField();
+        }
+
+        }
+
 
 }
