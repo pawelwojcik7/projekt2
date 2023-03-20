@@ -1,8 +1,8 @@
 package is.model;
 
+import is.xml.*;
 import lombok.*;
 
-@AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
@@ -44,6 +44,57 @@ public class ComputerInfo {
                 graphicCardMemory,
                 operatingSystem,
                 opticalDrive};
+    }
+
+    public ComputerInfo(String index, String producer, String diagonal, String resolution, String screenType,
+                        String isTouchable, String processor, String coreNumber, String frequency, String RAM,
+                        String diskSize, String diskType, String graphicCard, String graphicCardMemory,
+                        String operatingSystem, String opticalDrive) {
+        this.index = index == null ? "" : index;
+        this.producer = producer == null ? "" : producer;
+        this.diagonal = diagonal == null ? "" : diagonal;
+        this.resolution = resolution == null ? "" : resolution;
+        this.screenType = screenType == null ? "" : screenType;
+        this.isTouchable = isTouchable == null ? "" : isTouchable;
+        this.processor = processor == null ? "" : processor;
+        this.coreNumber = coreNumber == null ? "" : coreNumber;
+        this.frequency = frequency == null ? "" : frequency;
+        this.RAM = RAM == null ? "" : RAM;
+        this.diskSize = diskSize == null ? "" : diskSize;
+        this.diskType = diskType == null ? "" : diskType;
+        this.graphicCard = graphicCard == null ? "" : graphicCard;
+        this.graphicCardMemory = graphicCardMemory == null ? "" : graphicCardMemory;
+        this.operatingSystem = operatingSystem == null ? "" : operatingSystem;
+        this.opticalDrive = opticalDrive == null ? "" : opticalDrive;
+    }
+
+    public Laptop toLaptop(){
+        return new Laptop(
+                index,
+                producer,
+                new Screen(
+                        isTouchable,
+                        diagonal,
+                        resolution,
+                        screenType
+                ),
+                new Processor(
+                        processor,
+                        coreNumber,
+                        frequency
+                ),
+                RAM,
+                new Disc(
+                        diskType,
+                        diskSize
+                ),
+                new GraphicCard(
+                        graphicCard,
+                        graphicCardMemory
+                ),
+                operatingSystem,
+                opticalDrive
+        );
     }
 
 }

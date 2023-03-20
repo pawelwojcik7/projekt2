@@ -1,9 +1,9 @@
 package is;
 
-import is.components.Okienko;
+import is.components.MainFrame;
 
 public class Main {
     public static void main(String[] args) {
-        new Okienko();
+        new MainFrame();
     }
 }

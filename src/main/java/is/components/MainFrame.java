@@ -10,17 +10,13 @@ import is.model.ComputerInfo;
 import is.model.Either;
 import is.model.Headers;
 import is.validator.implementation.*;
-
-import is.xml.Laptop;
-import is.xml.Laptops;
-import org.dom4j.Document;
-import org.dom4j.Element;
-import org.dom4j.io.SAXReader;
+import is.xml.*;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import java.awt.*;
 import java.io.*;
@@ -32,7 +28,7 @@ import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-public class Okienko extends JFrame {
+public class MainFrame extends JFrame {
 
     private final JTextArea errorField;
     private List<ComputerInfo> list;
@@ -40,7 +36,7 @@ public class Okienko extends JFrame {
     private final JTable table;
     private Boolean isRead = false;
 
-    public Okienko() {
+    public MainFrame() {
         super("Projekt 2");
         setSize(1000, 1000);
 
@@ -81,6 +77,7 @@ public class Okienko extends JFrame {
         });
 
         readDataXml.addActionListener(e -> readXml());
+        savaDataXml.addActionListener(e -> saveXml());
 
         mainPanel.add(readDataTxt);
         mainPanel.add(saveDataTxt);
@@ -98,6 +95,59 @@ public class Okienko extends JFrame {
         setVisible(true);
     }
 
+    private void saveXml() {
+        if (!isRead) {
+            errorField.setText("Dane nie zostały wczytane");
+            clearErrorField();
+            return;
+        }
+        if (validateData()) {
+            List<List<String>> results = getTableContent();
+           List<Laptop> laptopList = results.stream().map(e ->
+              new Laptop(
+                        e.get(0),
+                        e.get(1),
+                        new Screen(
+                                e.get(5),
+                                e.get(2),
+                                e.get(3),
+                                e.get(4)
+                        ),
+                        new Processor(
+                                e.get(6),
+                                e.get(7),
+                                e.get(8)
+                        ),
+                        e.get(9),
+                        new Disc(
+                                e.get(11),
+                                e.get(10)
+                        ),
+                        new GraphicCard(
+                                e.get(12),
+                                e.get(13)
+                        ),
+                        e.get(14),
+                        e.get(15)
+                )
+            ).collect(Collectors.toList());
+
+            Laptops laptops = new Laptops(OffsetDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")), laptopList);
+            try {
+
+                JAXBContext jaxbContext = JAXBContext.newInstance(Laptops.class);
+                Marshaller marshaller = jaxbContext.createMarshaller();
+                String fileName = "laptops.xml";
+                FileOutputStream outputStream = new FileOutputStream(fileName);
+                marshaller.marshal(laptops, outputStream);
+                outputStream.close();
+            } catch (JAXBException | IOException e) {
+                e.printStackTrace();
+            }
+
+        }
+    }
+
     private void saveData() throws IOException {
         if (!isRead) {
             errorField.setText("Dane nie zostały wczytane");
@@ -105,18 +155,7 @@ public class Okienko extends JFrame {
             return;
         }
         if (validateData()) {
-            List<List<String>> results = new ArrayList<>();
-            int rowCount = table.getRowCount();
-            int colCount = table.getColumnCount();
-            for (int row = 0; row < rowCount; row++) {
-                List<String> rowList = new ArrayList<>();
-                for (int col = 0; col < colCount; col++) {
-                    String value = table.getValueAt(row, col).toString();
-                    if (value == null) value = "";
-                    rowList.add(value);
-                }
-                results.add(rowList);
-            }
+            List<List<String>> results = getTableContent();
             String zipFileName = OffsetDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH-mm-ss")) + ".zip";
             String fileName = "katalog.txt";
 
@@ -154,6 +193,22 @@ public class Okienko extends JFrame {
         }
 
 
+    }
+
+    private List<List<String>> getTableContent() {
+        List<List<String>> results = new ArrayList<>();
+        int rowCount = table.getRowCount();
+        int colCount = table.getColumnCount();
+        for (int row = 0; row < rowCount; row++) {
+            List<String> rowList = new ArrayList<>();
+            for (int col = 0; col < colCount; col++) {
+                String value = table.getValueAt(row, col).toString();
+                if (value == null) value = "";
+                rowList.add(value);
+            }
+            results.add(rowList);
+        }
+        return results;
     }
 
     private Boolean validateData() {
@@ -253,7 +308,7 @@ public class Okienko extends JFrame {
         repaint();
     }
 
-    private void readXml(){
+    private void readXml() {
         try {
             JAXBContext jaxbContext = JAXBContext.newInstance(Laptops.class);
             Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
@@ -263,12 +318,13 @@ public class Okienko extends JFrame {
             list = new ArrayList<>();
             list = laptops.getLaptops().stream().map(Laptop::toComputerInfo).collect(Collectors.toList());
             setTable();
+            isRead = true;
         } catch (JAXBException e) {
             errorField.setText(e.getMessage());
             clearErrorField();
         }
 
-        }
+    }
 
 
 }
