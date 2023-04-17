@@ -6,6 +6,7 @@ import com.opencsv.CSVParserBuilder;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
 import com.opencsv.exceptions.CsvValidationException;
+import is.database.Connector;
 import is.model.ComputerInfo;
 import is.model.Either;
 import is.model.Headers;
@@ -20,6 +21,7 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import java.awt.*;
 import java.io.*;
+import java.sql.SQLException;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -35,6 +37,7 @@ public class MainFrame extends JFrame {
     private final DefaultTableModel model;
     private final JTable table;
     private Boolean isRead = false;
+    private Connector dataBaseConnector;
 
     public MainFrame() {
         super("Projekt 2");
@@ -54,8 +57,20 @@ public class MainFrame extends JFrame {
         JButton saveDataTxt = new JButton("Zapisz dane do TXT");
         JButton readDataXml = new JButton("Wczytaj dane XML");
         JButton savaDataXml = new JButton("Zapisz dane do XML");
+        JButton readDataFromDatabaseButton = new JButton("Wczytaj z bazy");
+        JButton saveDataToDataBase = new JButton("Zapisz do bazy");
         JPanel mainPanel = new JPanel(new GridLayout(1, 5));
         JScrollPane content = new JScrollPane(table);
+
+        try{
+            dataBaseConnector = new Connector();
+            if(!dataBaseConnector.isTableExist("laptops")){
+                dataBaseConnector.createLaptopsTable();
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            readDataFromDatabaseButton.setEnabled(false);
+            saveDataToDataBase.setEnabled(false);
+        }
 
         readDataTxt.addActionListener(e -> {
             try {
@@ -83,6 +98,8 @@ public class MainFrame extends JFrame {
         mainPanel.add(saveDataTxt);
         mainPanel.add(readDataXml);
         mainPanel.add(savaDataXml);
+        mainPanel.add(readDataFromDatabaseButton);
+        mainPanel.add(saveDataToDataBase);
         mainPanel.add(errorField);
 
         setColumnHeaders();
