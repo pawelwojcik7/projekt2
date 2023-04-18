@@ -1,12 +1,12 @@
 package is.validator.implementation;
 
-import is.model.DiskType;
+import is.validator.models.DiskType;
 import is.model.Either;
-import is.validator.ColumnValidator;
+import is.validator.TableCellValidator;
 
 import java.util.Arrays;
 
-public class DiskTypeValidator implements ColumnValidator {
+public class DiskTypeValidator implements TableCellValidator {
 
     private final String message = " doesn't exist in disk types: " + Arrays.toString(Arrays.stream(DiskType.values()).map(DiskType::getCode).toArray());
 

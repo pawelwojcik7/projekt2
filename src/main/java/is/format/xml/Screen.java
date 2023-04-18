@@ -1,4 +1,4 @@
-package is.xml;
+package is.format.xml;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,15 +7,22 @@ import lombok.Setter;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-public class GraphicCard {
+public class Screen {
 
-    private String name;
-    private String memory;
+    @XmlAttribute
+    private String touch;
+
+    private String size;
+
+    private String resolution;
+
+    private String type;
 
 }

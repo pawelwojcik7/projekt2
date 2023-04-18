@@ -1,9 +1,9 @@
 package is.validator.implementation;
 
 import is.model.Either;
-import is.validator.ColumnValidator;
+import is.validator.TableCellValidator;
 
-public class ResolutionValidator implements ColumnValidator {
+public class ResolutionValidator implements TableCellValidator {
     private final static String resolutionRegex = "\\d+x\\d+";
 
     private final static String message = " doesn't match regex: NxN";

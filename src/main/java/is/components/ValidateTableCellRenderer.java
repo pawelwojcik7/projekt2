@@ -1,6 +1,6 @@
 package is.components;
 
-import is.validator.ColumnValidator;
+import is.validator.TableCellValidator;
 import lombok.Getter;
 
 import javax.swing.*;
@@ -9,9 +9,9 @@ import java.awt.*;
 
 public class ValidateTableCellRenderer extends DefaultTableCellRenderer {
     @Getter
-    private final ColumnValidator validator;
+    private final TableCellValidator validator;
 
-    public ValidateTableCellRenderer(ColumnValidator validator) {
+    public ValidateTableCellRenderer(TableCellValidator validator) {
         this.validator = validator;
     }
 

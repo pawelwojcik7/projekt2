@@ -1,12 +1,12 @@
 package is.validator.implementation;
 
 import is.model.Either;
-import is.model.ScreenType;
-import is.validator.ColumnValidator;
+import is.validator.models.ScreenType;
+import is.validator.TableCellValidator;
 
 import java.util.Arrays;
 
-public class ScreenTypeValidator implements ColumnValidator {
+public class ScreenTypeValidator implements TableCellValidator {
 
     private final String message = " doesn't exist in screen types: " + Arrays.toString(Arrays.stream(ScreenType.values()).map(ScreenType::getCode).toArray());
 

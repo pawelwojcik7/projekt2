@@ -1,4 +1,4 @@
-package is.xml;
+package is.format.xml;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,12 +14,12 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
-public class Laptops {
+public class LaptopsXML{
 
     @XmlAttribute(name = "moddate")
     private String modDate;
 
     @XmlElement(name = "laptop")
-    private List<Laptop> laptops;
+    private List<XMLInputFormat> XMLInputFormats;
 
 }

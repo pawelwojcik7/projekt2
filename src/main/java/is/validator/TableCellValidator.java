@@ -2,7 +2,7 @@ package is.validator;
 
 import is.model.Either;
 
-public interface ColumnValidator {
+public interface TableCellValidator {
 
     Either<String, Boolean> validate(String value);
 

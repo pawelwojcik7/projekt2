@@ -1,13 +1,12 @@
 package is.validator.implementation;
 
-import is.model.DiskType;
 import is.model.Either;
-import is.model.IsTouchable;
-import is.validator.ColumnValidator;
+import is.validator.models.IsTouchable;
+import is.validator.TableCellValidator;
 
 import java.util.Arrays;
 
-public class IsTouchableValidator implements ColumnValidator {
+public class IsTouchableValidator implements TableCellValidator {
     private final String message = " doesn't exist in touchable types: " + Arrays.toString(Arrays.stream(IsTouchable.values()).map(IsTouchable::getCode).toArray());
 
     @Override

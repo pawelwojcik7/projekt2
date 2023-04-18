@@ -1,5 +1,6 @@
-package is.xml;
+package is.format.xml;
 
+import is.format.InputFormat;
 import is.model.ComputerInfo;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,7 +15,7 @@ import javax.xml.bind.annotation.*;
 @NoArgsConstructor
 @Getter
 @Setter
-public class Laptop {
+public class XMLInputFormat  extends InputFormat<XMLInputFormat> {
 
     @XmlAttribute
     private String id;
@@ -58,6 +59,11 @@ public class Laptop {
                 this.operatingSystem,
                 this.opticalDrive
         );
+    }
+
+    @Override
+    public XMLInputFormat convert(ComputerInfo computerInfo) {
+        return null;
     }
 
 }

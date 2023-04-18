@@ -1,9 +1,9 @@
 package is.validator.implementation;
 
 import is.model.Either;
-import is.validator.ColumnValidator;
+import is.validator.TableCellValidator;
 
-public class DiagonalValidator implements ColumnValidator {
+public class DiagonalValidator implements TableCellValidator {
     private final static String diagonalRegex = "^[0-9]+\"$";
 
     private final static String message = " doesn't match regex: N\"";

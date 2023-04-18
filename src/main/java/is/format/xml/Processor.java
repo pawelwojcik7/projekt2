@@ -1,4 +1,4 @@
-package is.xml;
+package is.format.xml;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,18 +7,21 @@ import lombok.Setter;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-public class Disc {
+public class Processor {
 
-    @XmlAttribute
-    private String type;
+    private String name;
 
-    private String storage;
+    @XmlElement(name = "physical_cores")
+    private String physicalCores;
+
+    @XmlElement(name = "clock_speed")
+    private String clockSpeed;
 
 }

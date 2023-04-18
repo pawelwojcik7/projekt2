@@ -1,9 +1,9 @@
 package is.validator.implementation;
 
 import is.model.Either;
-import is.validator.ColumnValidator;
+import is.validator.TableCellValidator;
 
-public class GbColumnValidator implements ColumnValidator {
+public class GbTableCellValidator implements TableCellValidator {
     private final static String gbRegexRegex = "^[0-9]+GB$";
 
     private final static String message = " doesn't match regex: NUMBER + 'GB'";

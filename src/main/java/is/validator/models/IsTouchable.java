@@ -1,12 +1,15 @@
-package is.model;
+package is.validator.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @AllArgsConstructor
-public enum OpticalDriveType {
+public enum IsTouchable {
 
-    BLU_RAY("Blu-Ray"), BRAK("brak"), DVD("DVD");
+    TAK("tak"),
+    YES("yes"),
+    NO("no"),
+    NIE("nie");
 
     @Getter
     public final String code;

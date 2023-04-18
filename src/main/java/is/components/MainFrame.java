@@ -7,14 +7,14 @@ import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
 import com.opencsv.exceptions.CsvValidationException;
 import is.database.Connector;
-import is.model.ComputerInfo;
-import is.model.Either;
-import is.model.Headers;
+import is.format.xml.*;
+import is.model.*;
 import is.validator.implementation.*;
-import is.xml.*;
+import is.model.ComputerInfo;
+import is.validator.models.Headers;
+import is.validator.models.RecordType;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -30,13 +30,14 @@ import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-public class MainFrame extends JFrame {
+import static is.validator.models.RecordType.NEW;
 
+public class MainFrame extends JFrame {
     private final JTextArea errorField;
-    private List<ComputerInfo> list;
-    private final DefaultTableModel model;
+    private List<Pair<ComputerInfo, RecordType>> list;
+    private final TableModel tableModel;
     private final JTable table;
-    private Boolean isRead = false;
+    private Boolean isDataLoaded = false;
     private Connector dataBaseConnector;
 
     public MainFrame() {
@@ -45,13 +46,8 @@ public class MainFrame extends JFrame {
 
         list = new ArrayList<>();
         errorField = new JTextArea();
-        model = new DefaultTableModel() {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return column != 0;
-            }
-        };
-        table = new JTable(model);
+        tableModel = new TableModel();
+        table = new JTable(tableModel);
 
         JButton readDataTxt = new JButton("Wczytaj dane TXT");
         JButton saveDataTxt = new JButton("Zapisz dane do TXT");
@@ -75,7 +71,7 @@ public class MainFrame extends JFrame {
         readDataTxt.addActionListener(e -> {
             try {
                 readData();
-                isRead = true;
+                isDataLoaded = true;
             } catch (CsvValidationException | IOException ex) {
                 errorField.setText(ex.getMessage());
                 clearErrorField();
@@ -113,15 +109,15 @@ public class MainFrame extends JFrame {
     }
 
     private void saveXml() {
-        if (!isRead) {
+        if (!isDataLoaded) {
             errorField.setText("Dane nie zostały wczytane");
             clearErrorField();
             return;
         }
         if (validateData()) {
             List<List<String>> results = getTableContent();
-           List<Laptop> laptopList = results.stream().map(e ->
-              new Laptop(
+           List<XMLInputFormat> XMLInputFormatList = results.stream().map(e ->
+              new XMLInputFormat(
                         e.get(0),
                         e.get(1),
                         new Screen(
@@ -149,14 +145,14 @@ public class MainFrame extends JFrame {
                 )
             ).collect(Collectors.toList());
 
-            Laptops laptops = new Laptops(OffsetDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")), laptopList);
+            LaptopsXML LaptopsXML = new LaptopsXML(OffsetDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")), XMLInputFormatList);
             try {
 
-                JAXBContext jaxbContext = JAXBContext.newInstance(Laptops.class);
+                JAXBContext jaxbContext = JAXBContext.newInstance(LaptopsXML.class);
                 Marshaller marshaller = jaxbContext.createMarshaller();
                 String fileName = "laptops.xml";
                 FileOutputStream outputStream = new FileOutputStream(fileName);
-                marshaller.marshal(laptops, outputStream);
+                marshaller.marshal(LaptopsXML, outputStream);
                 outputStream.close();
             } catch (JAXBException | IOException e) {
                 e.printStackTrace();
@@ -166,7 +162,7 @@ public class MainFrame extends JFrame {
     }
 
     private void saveData() throws IOException {
-        if (!isRead) {
+        if (!isDataLoaded) {
             errorField.setText("Dane nie zostały wczytane");
             clearErrorField();
             return;
@@ -269,7 +265,7 @@ public class MainFrame extends JFrame {
             String diagonal;
             if (line[1] == null || line[1].equals("")) diagonal = line[1];
             else diagonal = line[1] + "\"";
-            list.add(new ComputerInfo(
+            list.add(new Pair<>(new ComputerInfo(
                     Integer.toString(i),
                     line[0],
                     diagonal,
@@ -286,7 +282,7 @@ public class MainFrame extends JFrame {
                     line[12],
                     line[13],
                     line[14]
-            ));
+            ), NEW));
             i++;
         }
         reader.close();
@@ -294,7 +290,7 @@ public class MainFrame extends JFrame {
     }
 
     private void setColumnHeaders() {
-        Headers.sortedValues().forEach(e -> model.addColumn(e.getCode()));
+        Headers.sortedValues().forEach(e -> tableModel.addColumn(e.getCode()));
         repaint();
     }
 
@@ -306,36 +302,36 @@ public class MainFrame extends JFrame {
         table.getColumnModel().getColumn(4).setCellRenderer(new ValidateTableCellRenderer(new ScreenTypeValidator()));
         table.getColumnModel().getColumn(5).setCellRenderer(new ValidateTableCellRenderer(new IsTouchableValidator()));
         table.getColumnModel().getColumn(6).setCellRenderer(new ValidateTableCellRenderer(new DefaultValidator()));
-        table.getColumnModel().getColumn(7).setCellRenderer(new ValidateTableCellRenderer(new NumberColumnValidator()));
-        table.getColumnModel().getColumn(8).setCellRenderer(new ValidateTableCellRenderer(new NumberColumnValidator()));
-        table.getColumnModel().getColumn(9).setCellRenderer(new ValidateTableCellRenderer(new GbColumnValidator()));
-        table.getColumnModel().getColumn(10).setCellRenderer(new ValidateTableCellRenderer(new GbColumnValidator()));
+        table.getColumnModel().getColumn(7).setCellRenderer(new ValidateTableCellRenderer(new NumberTableCellValidator()));
+        table.getColumnModel().getColumn(8).setCellRenderer(new ValidateTableCellRenderer(new NumberTableCellValidator()));
+        table.getColumnModel().getColumn(9).setCellRenderer(new ValidateTableCellRenderer(new GbTableCellValidator()));
+        table.getColumnModel().getColumn(10).setCellRenderer(new ValidateTableCellRenderer(new GbTableCellValidator()));
         table.getColumnModel().getColumn(11).setCellRenderer(new ValidateTableCellRenderer(new DiskTypeValidator()));
         table.getColumnModel().getColumn(12).setCellRenderer(new ValidateTableCellRenderer(new DefaultValidator()));
-        table.getColumnModel().getColumn(13).setCellRenderer(new ValidateTableCellRenderer(new GbColumnValidator()));
+        table.getColumnModel().getColumn(13).setCellRenderer(new ValidateTableCellRenderer(new GbTableCellValidator()));
         table.getColumnModel().getColumn(14).setCellRenderer(new ValidateTableCellRenderer(new DefaultValidator()));
         table.getColumnModel().getColumn(15).setCellRenderer(new ValidateTableCellRenderer(new OpticalDriveTypeValidator()));
         repaint();
     }
 
     private void setTable() {
-        model.setRowCount(0);
+        tableModel.setRowCount(0);
         repaint();
-        list.forEach(info -> model.addRow(info.toStringArray()));
+        list.forEach(info -> tableModel.addRow(info.getLeft().toStringArray()));
         repaint();
     }
 
     private void readXml() {
         try {
-            JAXBContext jaxbContext = JAXBContext.newInstance(Laptops.class);
+            JAXBContext jaxbContext = JAXBContext.newInstance(LaptopsXML.class);
             Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
 
             File xmlFile = new File("katalog.xml");
-            Laptops laptops = (Laptops) jaxbUnmarshaller.unmarshal(xmlFile);
+            LaptopsXML LaptopsXML = (LaptopsXML) jaxbUnmarshaller.unmarshal(xmlFile);
             list = new ArrayList<>();
-            list = laptops.getLaptops().stream().map(Laptop::toComputerInfo).collect(Collectors.toList());
+            list = LaptopsXML.getXMLInputFormats().stream().map(XMLInputFormat::toComputerInfo).map(e -> new Pair<ComputerInfo, RecordType>(e, NEW)).collect(Collectors.toList());
             setTable();
-            isRead = true;
+            isDataLoaded = true;
         } catch (JAXBException e) {
             errorField.setText(e.getMessage());
             clearErrorField();

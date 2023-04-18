@@ -1,4 +1,4 @@
-package is.xml;
+package is.format.xml;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,15 +14,11 @@ import javax.xml.bind.annotation.XmlAttribute;
 @NoArgsConstructor
 @Getter
 @Setter
-public class Screen {
+public class Disc {
 
     @XmlAttribute
-    private String touch;
-
-    private String size;
-
-    private String resolution;
-
     private String type;
+
+    private String storage;
 
 }

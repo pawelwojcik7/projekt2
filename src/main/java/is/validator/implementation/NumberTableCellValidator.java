@@ -1,9 +1,9 @@
 package is.validator.implementation;
 
 import is.model.Either;
-import is.validator.ColumnValidator;
+import is.validator.TableCellValidator;
 
-public class NumberColumnValidator implements ColumnValidator {
+public class NumberTableCellValidator implements TableCellValidator {
     private final static String onlyNumbersRegex = "^[0-9]+$";
 
     private final static String message = " doesn't match regex: only numbers";

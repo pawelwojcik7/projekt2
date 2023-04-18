@@ -1,13 +1,12 @@
 package is.validator.implementation;
 
-import is.model.DiskType;
 import is.model.Either;
-import is.model.OpticalDriveType;
-import is.validator.ColumnValidator;
+import is.validator.models.OpticalDriveType;
+import is.validator.TableCellValidator;
 
 import java.util.Arrays;
 
-public class OpticalDriveTypeValidator implements ColumnValidator {
+public class OpticalDriveTypeValidator implements TableCellValidator {
     private final String message = " doesn't exist in optical drive types: " + Arrays.toString(Arrays.stream(OpticalDriveType.values()).map(OpticalDriveType::getCode).toArray());
 
     @Override

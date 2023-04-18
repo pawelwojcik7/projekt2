@@ -1,6 +1,6 @@
 package is.model;
 
-import is.xml.*;
+import is.format.xml.*;
 import lombok.*;
 
 @NoArgsConstructor
@@ -68,8 +68,8 @@ public class ComputerInfo {
         this.opticalDrive = opticalDrive == null ? "" : opticalDrive;
     }
 
-    public Laptop toLaptop(){
-        return new Laptop(
+    public XMLInputFormat toLaptop(){
+        return new XMLInputFormat(
                 index,
                 producer,
                 new Screen(

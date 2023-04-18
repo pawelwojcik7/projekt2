@@ -1,9 +1,9 @@
 package is.validator.implementation;
 
 import is.model.Either;
-import is.validator.ColumnValidator;
+import is.validator.TableCellValidator;
 
-public class LetterColumnValidator implements ColumnValidator {
+public class LetterTableCellValidator implements TableCellValidator {
 
     private final static String onlyLettersRegex = "^[a-zA-Z]+$";
 

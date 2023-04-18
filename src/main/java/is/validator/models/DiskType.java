@@ -1,4 +1,4 @@
-package is.model;
+package is.validator.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
