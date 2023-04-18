@@ -53,8 +53,4 @@ public class DataBaseInputFormat extends InputFormat<DataBaseInputFormat> {
         );
     }
 
-        @Override
-        public DataBaseInputFormat convert(ComputerInfo computerInfo) {
-                return new DataBaseInputFormat(); //TODO : implementacja
-        }
 }

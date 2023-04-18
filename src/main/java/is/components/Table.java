@@ -1,14 +1,50 @@
 package is.components;
 
+import is.model.Either;
 import is.validator.implementation.*;
 
 import javax.swing.*;
+import javax.swing.table.TableModel;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Table extends JTable {
 
-    public Table() {
-        super();
+    public Table(TableModel dm) {
+        super(dm);
         setUpTable();
+    }
+
+    public String validateData(){
+        String errorMessage = "";
+        int rowCount = this.getRowCount();
+        int colCount = this.getColumnCount();
+        for (int row = 0; row < rowCount; row++) {
+            for (int col = 0; col < colCount; col++) {
+                ValidateTableCellRenderer renderer = (ValidateTableCellRenderer) this.getCellRenderer(row, col);
+                String value = this.getValueAt(row, col).toString();
+                Either<String, Boolean> validate = renderer.getValidator().validate(value);
+                if (validate.isLeft()) {
+                    errorMessage = errorMessage + "Wrong value at [" + (row + 1) + "][" + (col + 1) + "]. Message: " + validate.getLeft() + "\n";
+                }
+            }
+        }
+    }
+
+    public List<List<String>> getTableContent() {
+        List<List<String>> results = new ArrayList<>();
+        int rowCount = this.getRowCount();
+        int colCount = this.getColumnCount();
+        for (int row = 0; row < rowCount; row++) {
+            List<String> rowList = new ArrayList<>();
+            for (int col = 0; col < colCount; col++) {
+                String value = this.getValueAt(row, col).toString();
+                if (value == null) value = "";
+                rowList.add(value);
+            }
+            results.add(rowList);
+        }
+        return results;
     }
 
     private void setUpTable() {

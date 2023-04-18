@@ -15,7 +15,7 @@ import javax.xml.bind.annotation.*;
 @NoArgsConstructor
 @Getter
 @Setter
-public class XMLInputFormat  extends InputFormat<XMLInputFormat> {
+public class XMLInputFormat extends InputFormat<XMLInputFormat> {
 
     @XmlAttribute
     private String id;
@@ -40,7 +40,7 @@ public class XMLInputFormat  extends InputFormat<XMLInputFormat> {
     private String opticalDrive;
 
 
-    public ComputerInfo toComputerInfo(){
+    public ComputerInfo toComputerInfo() {
         return new ComputerInfo(
                 this.id,
                 this.manufacturer,
@@ -61,9 +61,31 @@ public class XMLInputFormat  extends InputFormat<XMLInputFormat> {
         );
     }
 
-    @Override
+
     public XMLInputFormat convert(ComputerInfo computerInfo) {
-        return null;
+        return new XMLInputFormat(
+                computerInfo.getIndex(),
+                computerInfo.getProducer(),
+                new Screen(
+                        computerInfo.getIsTouchable(),
+                        computerInfo.getDiagonal(),
+                        computerInfo.getResolution(),
+                        computerInfo.getScreenType()
+                ),
+                new Processor(
+                        computerInfo.getProcessor(),
+                        computerInfo.getCoreNumber(),
+                        computerInfo.getFrequency()
+                ),
+                computerInfo.getRAM(),
+                new Disc(
+                        computerInfo.getDiskType(),
+                        computerInfo.getDiskSize()
+                ),
+                new GraphicCard(),
+                computerInfo.getOperatingSystem(),
+                computerInfo.getOpticalDrive()
+        );
     }
 
 }

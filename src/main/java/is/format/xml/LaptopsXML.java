@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.xml.bind.annotation.*;
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @XmlRootElement(name = "laptops")
@@ -22,4 +24,8 @@ public class LaptopsXML{
     @XmlElement(name = "laptop")
     private List<XMLInputFormat> XMLInputFormats;
 
+    public LaptopsXML(List<XMLInputFormat> XMLInputFormats) {
+        this.modDate = OffsetDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+        this.XMLInputFormats = XMLInputFormats;
+    }
 }

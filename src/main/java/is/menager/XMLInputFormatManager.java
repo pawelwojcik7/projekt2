@@ -1,10 +1,9 @@
 package is.menager;
 
 import is.exception.ReadDataException;
-import is.format.xml.*;
-import is.model.ComputerInfo;
-import is.model.Pair;
-import is.validator.models.RecordType;
+import is.exception.SaveDataException;
+import is.format.xml.LaptopsXML;
+import is.format.xml.XMLInputFormat;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -16,7 +15,6 @@ import java.io.IOException;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class XMLInputFormatManager implements InputFormatManager<XMLInputFormat> {
     @Override
@@ -36,56 +34,22 @@ public class XMLInputFormatManager implements InputFormatManager<XMLInputFormat>
     }
 
     @Override
-    public void saveRecords(List<Pair<ComputerInfo, RecordType>> records) {
-        if (!isDataLoaded) {
-            errorField.setText("Dane nie zostały wczytane");
-            clearErrorField();
-            return;
-        }
-        if (validateData()) {
-            List<List<String>> results = getTableContent();
-            List<XMLInputFormat> XMLInputFormatList = results.stream().map(e ->
-                    new XMLInputFormat(
-                            e.get(0),
-                            e.get(1),
-                            new Screen(
-                                    e.get(5),
-                                    e.get(2),
-                                    e.get(3),
-                                    e.get(4)
-                            ),
-                            new Processor(
-                                    e.get(6),
-                                    e.get(7),
-                                    e.get(8)
-                            ),
-                            e.get(9),
-                            new Disc(
-                                    e.get(11),
-                                    e.get(10)
-                            ),
-                            new GraphicCard(
-                                    e.get(12),
-                                    e.get(13)
-                            ),
-                            e.get(14),
-                            e.get(15)
-                    )
-            ).collect(Collectors.toList());
-
-            LaptopsXML LaptopsXML = new LaptopsXML(OffsetDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")), XMLInputFormatList);
-            try {
-
-                JAXBContext jaxbContext = JAXBContext.newInstance(LaptopsXML.class);
-                Marshaller marshaller = jaxbContext.createMarshaller();
-                String fileName = "laptops.xml";
-                FileOutputStream outputStream = new FileOutputStream(fileName);
-                marshaller.marshal(LaptopsXML, outputStream);
-                outputStream.close();
-            } catch (JAXBException | IOException e) {
-                e.printStackTrace();
-            }
-
+    public void saveRecords(List<XMLInputFormat> xmlInputFormats) throws SaveDataException {
+        LaptopsXML laptopsXML = new LaptopsXML(xmlInputFormats);
+        try {
+         saveLaptopsXML(laptopsXML);
+        } catch (JAXBException | IOException e) {
+            throw new SaveDataException(e.getMessage());
         }
     }
+
+    private void saveLaptopsXML(LaptopsXML record) throws JAXBException, IOException {
+        JAXBContext jaxbContext = JAXBContext.newInstance(LaptopsXML.class);
+        Marshaller marshaller = jaxbContext.createMarshaller();
+        String fileName = "laptops.xml";
+        FileOutputStream outputStream = new FileOutputStream(fileName);
+        marshaller.marshal(record, outputStream);
+        outputStream.close();
+    }
+
 }
