@@ -63,7 +63,7 @@ public class MainFrame extends JFrame {
             mainPanel.setCommunicate(AppUtils.DATA_NOT_LOADED);
         } else if (validateData()) {
             try {
-                dataBaseInputFormatManager.saveRecords(mainList.stream().map(Pair::getLeft).toList());
+                dataBaseInputFormatManager.saveRecords(mainList.stream().filter(e -> e.getRight().equals(RecordType.NEW)).map(Pair::getLeft).toList());
             } catch (SaveDataException e) {
                 mainPanel.setCommunicate(e.getMessage());
             }
@@ -156,6 +156,10 @@ public class MainFrame extends JFrame {
         //tableModel.setRowCount(0);
         repaint();
         mainList.forEach(info -> tableModel.addRow(info.getLeft().toStringArray()));
+//        mainList.stream().map(e -> {
+//            Object[] array = Arrays.stream(e.getLeft().toStringArray()).map(a -> new Pair<String, RecordType>(a, e.getRight())).toList().toArray();
+//            return array;
+//        }).forEach(tableModel::addRow);
         repaint();
     }
 

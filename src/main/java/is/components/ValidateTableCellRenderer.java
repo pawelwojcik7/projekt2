@@ -18,6 +18,7 @@ public class ValidateTableCellRenderer extends DefaultTableCellRenderer {
 
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+        //Pair<String, RecordType> value1 = (Pair<String, RecordType>) value;
         Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
         if (value == null || value.equals("")) {
             c.setBackground(Color.YELLOW);
@@ -25,7 +26,7 @@ public class ValidateTableCellRenderer extends DefaultTableCellRenderer {
             if (validator.validate((String) value).isLeft()) c.setBackground(Color.RED);
           else c.setBackground(table.getBackground());
         }
-
+            //setText(value1.getLeft());
         return c;
     }
 
