@@ -1,6 +1,5 @@
 package is.format.xml;
 
-import is.format.InputFormat;
 import is.model.ComputerInfo;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,7 +14,7 @@ import javax.xml.bind.annotation.*;
 @NoArgsConstructor
 @Getter
 @Setter
-public class XMLInputFormat extends InputFormat<XMLInputFormat> {
+public class XMLInputFormat {
 
     @XmlAttribute
     private String id;
@@ -62,7 +61,7 @@ public class XMLInputFormat extends InputFormat<XMLInputFormat> {
     }
 
 
-    public XMLInputFormat convert(ComputerInfo computerInfo) {
+    public static XMLInputFormat convert(ComputerInfo computerInfo) {
         return new XMLInputFormat(
                 computerInfo.getIndex(),
                 computerInfo.getProducer(),

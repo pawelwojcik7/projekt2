@@ -1,7 +1,6 @@
 package is.format.database;
 
 
-import is.format.InputFormat;
 import is.model.ComputerInfo;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,7 +11,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class DataBaseInputFormat extends InputFormat<DataBaseInputFormat> {
+public class DataBaseInputFormat {
 
     private String index;
     private String producer;
@@ -31,7 +30,7 @@ public class DataBaseInputFormat extends InputFormat<DataBaseInputFormat> {
     private String operatingSystem;
     private String opticalDrive;
 
-    @Override
+
     public ComputerInfo toComputerInfo() {
         return new ComputerInfo(
                 this.index,

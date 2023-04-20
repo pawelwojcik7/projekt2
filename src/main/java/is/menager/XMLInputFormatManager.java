@@ -4,6 +4,8 @@ import is.exception.ReadDataException;
 import is.exception.SaveDataException;
 import is.format.xml.LaptopsXML;
 import is.format.xml.XMLInputFormat;
+import is.model.ComputerInfo;
+import is.utils.AppUtils;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -12,21 +14,19 @@ import javax.xml.bind.Unmarshaller;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.time.OffsetDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-public class XMLInputFormatManager implements InputFormatManager<XMLInputFormat> {
+public class XMLInputFormatManager implements InputFormatManager {
     @Override
-    public List<XMLInputFormat> getRecords() throws ReadDataException {
+    public List<ComputerInfo> getRecords() throws ReadDataException {
 
         try {
             JAXBContext jaxbContext = JAXBContext.newInstance(LaptopsXML.class);
             Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-            File xmlFile = new File("katalog.xml");
+            File xmlFile = new File(AppUtils.XML_FILE_NAME);
             LaptopsXML laptopsXML = (LaptopsXML) jaxbUnmarshaller.unmarshal(xmlFile);
 
-            return laptopsXML.getXMLInputFormats();
+            return laptopsXML.getXMLInputFormats().stream().map(XMLInputFormat::toComputerInfo).toList();
         } catch (JAXBException e) {
             throw new ReadDataException(e.getMessage());
         }
@@ -34,8 +34,8 @@ public class XMLInputFormatManager implements InputFormatManager<XMLInputFormat>
     }
 
     @Override
-    public void saveRecords(List<XMLInputFormat> xmlInputFormats) throws SaveDataException {
-        LaptopsXML laptopsXML = new LaptopsXML(xmlInputFormats);
+    public void saveRecords(List<ComputerInfo> xmlInputFormats) throws SaveDataException {
+        LaptopsXML laptopsXML = new LaptopsXML(xmlInputFormats.stream().map(XMLInputFormat::convert).toList());
         try {
          saveLaptopsXML(laptopsXML);
         } catch (JAXBException | IOException e) {
@@ -46,8 +46,7 @@ public class XMLInputFormatManager implements InputFormatManager<XMLInputFormat>
     private void saveLaptopsXML(LaptopsXML record) throws JAXBException, IOException {
         JAXBContext jaxbContext = JAXBContext.newInstance(LaptopsXML.class);
         Marshaller marshaller = jaxbContext.createMarshaller();
-        String fileName = "laptops.xml";
-        FileOutputStream outputStream = new FileOutputStream(fileName);
+        FileOutputStream outputStream = new FileOutputStream(AppUtils.XML_FILE_NAME);
         marshaller.marshal(record, outputStream);
         outputStream.close();
     }

@@ -2,18 +2,15 @@ package is.menager;
 
 import is.exception.ReadDataException;
 import is.exception.SaveDataException;
-import is.format.InputFormat;
 import is.model.ComputerInfo;
-import is.model.Pair;
-import is.validator.models.RecordType;
 
 import java.util.List;
-public interface InputFormatManager<Format extends InputFormat<Format>>{
 
-    List<Format> getRecords() throws ReadDataException;
+public interface InputFormatManager {
 
-    void saveRecords(List<Format> computerInfos) throws SaveDataException;
+    List<ComputerInfo> getRecords() throws ReadDataException;
 
+    void saveRecords(List<ComputerInfo> computerInfos) throws SaveDataException;
 
 
 }

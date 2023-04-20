@@ -1,13 +1,9 @@
 package is.components;
 
-import is.model.ComputerInfo;
-import is.model.Pair;
-import is.validator.models.RecordType;
 import lombok.Getter;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.List;
 
 @Getter
 public class MainPanel extends JPanel {
@@ -37,6 +33,8 @@ public class MainPanel extends JPanel {
     }
 
     public void setCommunicate(String message){
+        communicateTextArea.setText("");
+        communicateTextArea.repaint();
         communicateTextArea.setCommunicate(message);
     }
 
