@@ -13,6 +13,7 @@ import is.format.xml.XMLInputFormat;
 import is.menager.XMLInputFormatManager;
 import is.model.ComputerInfo;
 import is.model.Pair;
+import is.utils.AppUtils;
 import is.validator.models.RecordType;
 
 import javax.swing.*;
@@ -116,10 +117,9 @@ public class MainFrame extends JFrame {
             mainPanel.setCommunicate("Dane nie zostały wczytane");
         } else if (validateData()) {
             List<List<String>> results = table.getTableContent();
-            String zipFileName = OffsetDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH-mm-ss")) + ".zip";
-            String fileName = "katalog.txt";
+            String zipFileName = OffsetDateTime.now().format(AppUtils.DATE_TIME_FORMATTER) + ".zip";
 
-            PrintWriter writer = new PrintWriter(fileName);
+            PrintWriter writer = new PrintWriter(AppUtils.TXT_FILE_NAME);
             results.forEach(e -> {
                 String res = "";
                 for (int i = 1; i < e.size(); i++) {
@@ -132,10 +132,10 @@ public class MainFrame extends JFrame {
 
             FileOutputStream fos = new FileOutputStream(zipFileName);
             ZipOutputStream zos = new ZipOutputStream(fos);
-            ZipEntry ze = new ZipEntry(fileName);
+            ZipEntry ze = new ZipEntry(AppUtils.TXT_FILE_NAME);
             zos.putNextEntry(ze);
 
-            FileInputStream in = new FileInputStream(fileName);
+            FileInputStream in = new FileInputStream(AppUtils.TXT_FILE_NAME);
             byte[] buffer = new byte[1024];
             int len;
             while ((len = in.read(buffer)) > 0) {
@@ -217,8 +217,7 @@ public class MainFrame extends JFrame {
             setTable();
             isDataLoaded = true;
         } catch (JAXBException e) {
-            errorField.setText(e.getMessage());
-            clearErrorField();
+            mainPanel.setCommunicate(e.getMessage());
         }
 
     }
