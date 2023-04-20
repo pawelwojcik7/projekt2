@@ -2,12 +2,10 @@ package is.format.database;
 
 
 import is.model.ComputerInfo;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
 @ToString
@@ -49,6 +47,27 @@ public class DataBaseInputFormat {
                 this.graphicCardMemory,
                 this.operatingSystem,
                 this.opticalDrive
+        );
+    }
+
+    public static DataBaseInputFormat convert(ComputerInfo computerInfo) {
+        return new DataBaseInputFormat(
+                computerInfo.getIndex(),
+                computerInfo.getProducer(),
+                computerInfo.getDiagonal(),
+                computerInfo.getResolution(),
+                computerInfo.getScreenType(),
+                computerInfo.getIsTouchable(),
+                computerInfo.getProcessor(),
+                computerInfo.getCoreNumber(),
+                computerInfo.getFrequency(),
+                computerInfo.getRAM(),
+                computerInfo.getDiskSize(),
+                computerInfo.getDiskType(),
+                computerInfo.getGraphicCard(),
+                computerInfo.getGraphicCardMemory(),
+                computerInfo.getOperatingSystem(),
+                computerInfo.getOpticalDrive()
         );
     }
 

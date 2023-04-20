@@ -52,8 +52,37 @@ public class MainFrame extends JFrame {
         mainPanel.getSaveDataTxt().addActionListener(e -> tryToSaveDataTxt());
         mainPanel.getReadDataXml().addActionListener(e -> tryToReadDataXml());
         mainPanel.getSavaDataXml().addActionListener(e -> tryToSavaDataXml());
+        mainPanel.getReadDataFromDatabaseButton().addActionListener(e -> tryToReadDataFromDataBase());
+        mainPanel.getSaveDataToDataBase().addActionListener(e -> tryToSaveDataToDataBase());
 
         init();
+    }
+
+    private void tryToSaveDataToDataBase() {
+        if (!isDataLoaded) {
+            mainPanel.setCommunicate(AppUtils.DATA_NOT_LOADED);
+        } else if (validateData()) {
+            try {
+                dataBaseInputFormatManager.saveRecords(mainList.stream().map(Pair::getLeft).toList());
+            } catch (SaveDataException e) {
+                mainPanel.setCommunicate(e.getMessage());
+            }
+        }
+    }
+
+    private void tryToReadDataFromDataBase() {
+        List<ComputerInfo> records = null;
+        try {
+            records = dataBaseInputFormatManager.getRecords();
+            MergeStatistic statisitic = merger.compareAndMerge(records, mainList);
+            mainPanel.setCommunicate(
+                    "Znaleziono " + String.valueOf(statisitic.getNewRecords() + statisitic.getDuplicates()) + " z czego " + statisitic.getDuplicates() + " to duplikaty"
+            );
+            isDataLoaded = true;
+            setTable();
+        } catch (ReadDataException e) {
+            mainPanel.setCommunicate(e.getMessage());
+        }
     }
 
     private void init() {

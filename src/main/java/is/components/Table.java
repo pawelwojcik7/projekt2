@@ -4,6 +4,7 @@ import is.model.Either;
 import is.validator.implementation.*;
 
 import javax.swing.*;
+import javax.swing.event.CellEditorListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellEditor;
@@ -13,13 +14,17 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.EventObject;
 import java.util.List;
+import java.util.Objects;
 
 public class Table extends JTable {
 
+
+    private Color editingColor = Color.GREEN;
+
     public Table(TableModel dm) {
         super(dm);
-        setUpTableValidators();
         setUpTableCellEditor();
+        setUpTableValidators();
     }
 
     @Override
@@ -27,6 +32,19 @@ public class Table extends JTable {
         TableCellEditor editor = super.getCellEditor(row, column);
         if (editor instanceof DefaultCellEditor) {
             ((DefaultCellEditor) editor).setClickCountToStart(1);
+            editor.addCellEditorListener(new CellEditorListener() {
+                @Override
+                public void editingStopped(ChangeEvent e) {
+                    setRowBackground(row, getBackground());
+                    repaint();
+                }
+
+                @Override
+                public void editingCanceled(ChangeEvent e) {
+                    setRowBackground(row, getBackground());
+                    repaint();
+                }
+            });
         }
         return editor;
     }
@@ -50,35 +68,32 @@ public class Table extends JTable {
                     ((DefaultCellEditor) editor).getComponent().requestFocusInWindow();
                 }
             });
+            setRowBackground(row, editingColor);
         }
         return result;
     }
 
-    @Override
-    public void editingStopped(ChangeEvent e) {
-        super.editingStopped(e);
-        int row = getSelectedRow();
+    public void setRowBackground(int row, Color color) {
         for (int i = 0; i < getColumnCount(); i++) {
             TableCellRenderer renderer = getCellRenderer(row, i);
             Component component = prepareRenderer(renderer, row, i);
-            component.setBackground(Color.GREEN);
+            component.setBackground(color);
         }
     }
 
-    public String validateData(){
+    public String validateData() {
         StringBuilder errorMessage = new StringBuilder();
         for (int row = 0; row < getRowCount(); row++) {
             for (int col = 0; col < getColumnCount(); col++) {
                 ValidateTableCellRenderer renderer = (ValidateTableCellRenderer) this.getCellRenderer(row, col);
-                String value = this.getValueAt(row, col).toString();
+                String value = Objects.toString(this.getValueAt(row, col), "");
                 Either<String, Boolean> validate = renderer.getValidator().validate(value);
                 if (validate.isLeft()) {
                     errorMessage.append("Wrong value at [").append(row + 1).append("][").append(col + 1).append("]. Message: ").append(validate.getLeft()).append("\n");
                 }
             }
         }
-        return errorMessage.toString();
-    }
+        return errorMessage.toString();}
 
     public List<List<String>> getTableContent() {
         List<List<String>> results = new ArrayList<>();

@@ -23,7 +23,7 @@ public class ValidateTableCellRenderer extends DefaultTableCellRenderer {
             c.setBackground(Color.YELLOW);
         } else {
             if (validator.validate((String) value).isLeft()) c.setBackground(Color.RED);
-           else c.setBackground(table.getBackground());
+          else c.setBackground(table.getBackground());
         }
 
         return c;
