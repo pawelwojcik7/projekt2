@@ -1,0 +1,70 @@
+<!-- LaptopService.wsdl -->
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/"
+             xmlns:tns="http://example.com/laptop"
+             xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+             xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+             targetNamespace="http://example.com/laptop">
+
+    <types>
+        <xsd:schema targetNamespace="http://example.com/laptop">
+            <xsd:complexType name="laptop">
+                <!-- Define fields for DataBaseInputFormat -->
+            </xsd:complexType>
+        </xsd:schema>
+    </types>
+
+    <message name="getDistinctProducersRequest">
+    </message>
+
+    <message name="getDistinctProducersResponse">
+        <part name="producers" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+    </message>
+
+    <message name="getLaptopsByProducerRequest">
+        <part name="producer" type="xsd:string"/>
+    </message>
+
+    <message name="getLaptopsByProducerResponse">
+        <part name="laptops" type="tns:laptop" minOccurs="0" maxOccurs="unbounded"/>
+    </message>
+
+    <portType name="LaptopService">
+        <operation name="getDistinctProducers">
+            <input message="tns:getDistinctProducersRequest"/>
+            <output message="tns:getDistinctProducersResponse"/>
+        </operation>
+        <operation name="getLaptopsByProducer">
+            <input message="tns:getLaptopsByProducerRequest"/>
+            <output message="tns:getLaptopsByProducerResponse"/>
+        </operation>
+    </portType>
+
+    <binding name="LaptopServiceSoapBinding" type="tns:LaptopService">
+        <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <operation name="getDistinctProducers">
+            <soap:operation soapAction=""/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+        </operation>
+        <operation name="getLaptopsByProducer">
+            <soap:operation soapAction=""/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+        </operation>
+    </binding>
+
+    <service name="LaptopService">
+        <port name="LaptopServicePort" binding="tns:LaptopServiceSoapBinding">
+            <soap:address location="http://localhost:8080/LaptopService"/>
+        </port>
+    </service>
+
+</definitions>
